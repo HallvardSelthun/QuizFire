@@ -2,6 +2,8 @@ body{
     background-color: #0066FF;
     font-size:150%;
     font-family: Tahoma, sans-serif;
+    color:#FAC800;
+
 }
 .jumbotron{
     background-color: #0066FF;
@@ -9,6 +11,14 @@ body{
 }
 .nav{
     /*margin:0;*/
+}
+a{
+    color:#FAC800;
+}
+h1, h2, h3, h4{
+    color:#FAC800;
+    font-weight:bold;
+
 }
 .container{
     /*margin:0;*/
@@ -40,6 +50,17 @@ header h1{
     background-color: #0066FF;
     margin-bottom:10px;
     border:solid 2px #FAC800;
+}
+#sTable{
+    width:300px;
+    color:darkorange;
+    border-collapse: collapse;
+    border:solid 2px darkorange;
+    font-weight:bold;
+
+}
+thead{
+    font-weight:bold;font-size:1.3em;
 }
 #quizHeader{
     display:inline-block;

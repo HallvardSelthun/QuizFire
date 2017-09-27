@@ -32,6 +32,9 @@ body {
     font-family: Tahoma, sans-serif;
     font-weight:bold;
 }
+a{
+    color:#FAC800;
+}
 body {
     color: #FAC800;
     text-align: center;
