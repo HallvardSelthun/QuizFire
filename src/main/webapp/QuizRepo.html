@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="web-res/css/QuizRepo.css" rel="stylesheet">
+    <title>Browse Quizzes</title>
+    <link rel="icon" type="image/gif" href="web-res/qfav.png">
+
+
+    <script src="web-res/js/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var qName;
+            var quizList;
+            $.getJSON("rest/quizzes", function (data) {
+                quizList = data;
+
+                for (var i = 0, len = data.length; i < len; i++) {
+
+                    var qName = (data[i].name);
+                    var startTime = new Date(data[i]["startDay"] + "T" + data[i]["startTime"] + ":00+02:00");
+                    $("#quizList").append('<li class ="quizObj" ><button type ="button" class ="btn btn-primary btn-lg">' + qName + '<br>' + data[i]["startDay"] + '<br>' + data[i]["startTime"] + ' </button></li>');
+
+                }
+            });
+
+            $('#quizList').on('click', 'li', function () {
+
+                var i = ($(this).index());
+                qName = quizList[i].name;
+                var startTime = new Date(quizList[i]["startDay"] + "T" + quizList[i]["startTime"] + ":00+02:00");
+                var endTime = new Date(((startTime.getTime()) + parseInt(quizList[i]["endTime"])));
+                var now = new Date(Date.now());
+                if (startTime > now) {
+                    alert("Quiz hasn't started yet!");
+                    return;
+                }
+                    $("#myModalTable").modal('show');
+                    $(".modal-title").html(quizList[i].name);
+                    fillTable(i);
+
+                    if (endTime < now) {
+                        $("#myBtn").html("Return");
+                    }
+                    $("#myBtn").click(function () {
+                        if(endTime<now){
+                            return;
+                        }
+                        var ok = false;
+                        var nick = prompt("Please enter your nick: ");
+                        while (ok != false) {
+                            if (nick.indexOf('_') > -1) {
+                                nick = prompt("Nick can not contain '_', try again:");
+                            } else {
+                                ok = true;
+                            }
+                        }
+
+                        var serverNick = nick + "_" + qName;
+                        var p = {
+                            nickname: serverNick,
+                            score: 0
+                        };
+                        $.ajax({
+                            url: "rest/participants",
+                            type: 'POST',
+                            data: JSON.stringify(p),
+                            contentType: 'application/json; charset=utf-8',
+                            dataType: 'json',
+                            success: function () {
+                                localStorage.setItem("joinQuiz", quizList[i].name);
+                                localStorage.setItem("serverNick", serverNick);
+                                window.location = "QuizPage.html";
+                            },
+                            error: function (result) {
+                                alert("Something went wrong");
+                                console.log(result);
+                            }
+                        });
+                    });
+                });
+            function fillTable(){
+                $("#sTable").find("tr:gt(0)").remove();
+
+
+                $.getJSON("rest/participants", function (data) {
+                    for (var i = 0, len = data.length; i < len; i++) {
+
+                        nick = (JSON.stringify(data[i].nickname));
+                        var position = nick.indexOf("_");
+                        var nickQuiz = (nick.substr(position+1, nick.length-1).replace('"',''));
+                        /*console.log(quizName);*/
+                        if(nickQuiz === qName ){
+                            var activeNick = nick.substr(0, position).replace('"','');
+                            $('#sTable').append('<tr><td>'+activeNick+'</td><td>'+data[i].score+'</td></tr>');
+
+                        }
+
+
+                    }
+                });
+
+            }
+        })
+    </script>
+</head>
+<body>
+<header class="container">
+    <div class="row">
+        <h1 class="col-sm-6" id="quizName">Choose a quiz!</h1>
+        <nav class="col-sm-6">
+            <a href="index.html">Back to Main Page</a>
+        </nav>
+        <nav class="col-sm-6">
+            <p id="timer"></p>
+        </nav>
+    </div>
+</header>
+<div class="content" id="qList">
+    <ul id="quizList">
+
+    </ul>
+</div>
+<div class="modal fade" id="myModalTable">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title"></h3>
+            </div>
+            <div class="modal-body">
+                <h5 class="text-center">Score: </h5>
+                <table id="sTable" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Nick</th>
+                        <th>Score</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default " data-dismiss="modal" id="myBtn">Join</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+
+</body>
+</html>

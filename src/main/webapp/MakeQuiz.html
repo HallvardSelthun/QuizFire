@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<link href="web-res/css/bootstrap.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <link href="web-res/css/MakeQuizCSS.css" rel="stylesheet">
+    <title>Create Quiz</title>
+    <link rel="icon" type="image/gif" href="web-res/qfav.png">
+
+
+    <script src="web-res/js/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="web-res/js/MakeQuizJS.js"></script>
+    <script>
+        var name;
+        var counter= 0;
+        $(document).ready(function () {
+
+            $(".alert").hide();
+            var quizName = localStorage.getItem("quizName");
+            var questionAmount = localStorage.getItem("qAmount");
+            $("#name").html(quizName);
+            $.getJSON("rest/quizzes/" + quizName, function (data) {
+                name = data["name"];
+                $("#quizName").val(name);
+
+            }, "json");
+
+
+            $("#nextQuestionBtn").click(function () {
+                var question = {
+                    questionName: $("#question").val(),
+
+                    alternatives: [$("#corrA").val(), $("#wA1").val(), $("#wA2").val(), $("#wA3").val()],
+                    corrAlt: 0
+
+                };
+                $.ajax({
+                    url: 'rest/quizzes/'+quizName,
+                    type: 'PUT',
+                    data: JSON.stringify(question),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (result) {
+                        $(".alert").show();
+                        counter++;
+                        $("#qNr").html("Question "+(counter+1)+": ");
+                        $("#question").val("Next Question");
+                        $("#corrA").val("Correct Answer");
+                        $("#wA1,#wA2,#wA3").val("Wrong Answer");
+                        window.setTimeout(function(){
+                            $(".alert").hide();
+                        },1000);
+
+                        if(counter>=questionAmount){
+                            alert("You've made all your questions, quiz posted!");
+                            window.location="index.html";
+                        }
+                        if(counter === (questionAmount-1)){
+                            $("#nextQuestionBtn").html("Post Quiz");
+                        }
+
+                    },
+                    error: function (result) {
+                        alert("Something went wrong");
+                        console.log(result);
+                    }
+
+                });
+
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+<header class="container">
+    <div class="row">
+        <h1 class="col-sm-6">QuizFire!</h1>
+        <nav class="col-sm-6">
+            <a href="index.html">Back to Main Page</a>
+        </nav>
+    </div>
+</header>
+<section class="jumbotron">
+    <div class="container" id="topBorder">
+        <div class="container" id="quizHeader">
+
+                <h2 id = "name"></h2>
+
+        </div>
+    </div>
+
+    <div class="row">
+    </div>
+    <div class="container" id="questionBorder">
+        <div class="container" id="addQuestion">
+
+            <div class="form-group" id="questionName">
+                <label for="question" id = "qNr">Question 1:</label>
+                <input type="text" class="form-control" value="Your question" id="question">
+            </div>
+
+            <div class="answers">
+                <div class="form-group">
+                    <label for="corrA">Correct answer</label>
+                    <input type="text" class="form-control" id="corrA">
+                </div>
+                <div class="form-group">
+                    <label for="wA1">Wrong answer nr 1:</label>
+                    <input type="text" class="form-control" id="wA1">
+                </div>
+                <div class="form-group">
+                    <label for="wA2">Wrong answer nr 2:</label>
+                    <input type="text" class="form-control" id="wA2">
+                </div>
+                <div class="form-group">
+                    <label for="wA3">Wrong answer nr 3:</label>
+                    <input type="text" class="form-control" id="wA3">
+                </div>
+            </div>
+
+            <div class="col-sm-3" id="nextButton">
+                <button type="button" class="btn btn-basic" id="nextQuestionBtn">Next Question</button>
+            </div>
+        </div>
+    </div>
+    <div id="alertBox">
+        <div class="alert alert-success fade in" id ="qSucc">
+            <strong>Success!</strong>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

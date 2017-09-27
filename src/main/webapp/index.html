@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="web-res/js/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Custom styles for this template -->
+    <link href="web-res/css/cover.css" rel="stylesheet">
+    <!--<script src="web-res/js/bootstrap.min.js"></script>-->
+    <title>QuizFire!</title>
+    <link rel="icon" type="image/gif" href="web-res/qfav.png">
+
+
+
+    <!-- MODAL NOT WORKING WITH LOCAL BOOTSTRAP-->
+
+
+    <script>
+        $(document).ready(function () {
+            $("#createQuiz").click(function () {
+                $("#myModal").modal('show');
+
+            });
+            $("#createFinal").click(function () {
+                var test = new Date(Date.parse($("#quizDate").val()));
+                test.getMilliseconds();
+                console.log(test.getMilliseconds());
+                var quizName = $("#quizName").val();
+                localStorage.setItem("quizName", quizName);
+                localStorage.setItem("qAmount",$("#qAmount").val());
+                var quiz = {
+                    name: quizName,
+                    questionTime: $("#timeInt").val(),
+                    questions: [],
+                    startDay: ($("#quizDate").val().toString()),
+                    startTime: ($("#quizTime").val().toString()),
+                    qAmount: $("#qAmount").val(),
+                    endTime: (1000*$("#timeInt").val()*$("#qAmount").val())
+                };
+                $.ajax({
+                    url: "rest/quizzes",
+                    type: 'POST',
+                    data: JSON.stringify(quiz),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function () {
+                        window.location = "MakeQuiz.html";
+                    },
+                    error: function () {
+                        alert("Something went wrong");
+                    }
+                })
+            });
+
+            $("#browseQuizzes").click(function () {
+                window.location = "QuizRepo.html";
+            })
+        });
+    </script>
+
+</head>
+
+
+<body>
+
+<div class="site-wrapper">
+
+    <div class="site-wrapper-inner">
+        <div class="cover-container">
+            <div class="inner cover">
+                <h1 class="cover-heading">QuizFire!</h1>
+                <p class="lead">
+                    Welcome to QuizFire! Create and join quizzes whenever you want!
+                </p>
+                <p class="lead">
+                    <button type="button" class="btn btn-info btn-lg" id="createQuiz">Create Quiz</button>
+                    <a href="#" class="btn btn-lg btn-default" id="browseQuizzes">Browse Quizzes</a>
+                </p>
+            </div>
+
+            <div class="mastfoot">
+                <div class="inner">
+                    <p>Template by bootstrap.</p>
+                </div>
+            </div>
+
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Create Quiz</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <p>Quiz Name:</p>
+                            <input type="text" id="quizName" value="Quiz Name">
+                        </div>
+                        <div class="row">
+                            <p>Time per question:</p>
+                            <div class="form-group">
+                                <select class="form-control" id="timeInt">
+                                    <option>5</option>
+                                    <option>10</option>
+                                    <option>15</option>
+                                    <option>20</option>
+                                    <option>30</option>
+                                    <option>40</option>
+                                    <option>60</option>
+                                </select>
+                            </div>
+                            <p>Seconds</p>
+                        </div>
+                        <div class="row">
+                            <p>Amount of questions</p>
+                            <input type="text" id="qAmount" value="1">
+                        </div>
+                        <div class="row">
+                            <p>Start day</p>
+                            <input type ="date" id ="quizDate">
+                        </div>
+                        <div class="row">
+                            <p>Start time</p>
+                            <input type ="time" id ="quizTime">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" id="createFinal" data-dismiss="modal">Create
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+

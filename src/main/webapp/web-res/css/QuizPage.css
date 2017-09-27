@@ -1,0 +1,102 @@
+body{
+    background-color: #0066FF;
+    font-size:150%;
+    font-family: Tahoma, sans-serif;
+}
+.jumbotron{
+    background-color: #0066FF;
+    /*margin:0;*/
+}
+.nav{
+    /*margin:0;*/
+}
+.container{
+    /*margin:0;*/
+}
+header {
+    background-color:  #0066FF;
+    display: inline-block;
+    border:solid 2px #FAC800;
+    margin-bottom:35px;
+}
+.form-group{
+    padding:0;
+    margin:2px;
+}
+header nav {
+    width:200px;
+}
+header h1{
+    width:200px;
+}
+.btn{
+    background-color:darkorange;
+    color:#000;
+}
+.btn btn-default dropdown-toggle {
+    font-size:50%;
+}
+#topBorder{
+    background-color: #0066FF;
+    margin-bottom:10px;
+    border:solid 2px #FAC800;
+}
+#quizHeader{
+    display:inline-block;
+    margin:0;
+}
+#quizName {
+    width:200px;
+    height: 1.5em;
+}
+#timeInt{
+    width:75px;
+    position:relative;
+    top:-20px;
+}
+.form-group .col-sm-12{
+    display:inline;
+}
+#questionBorder{
+    float:left;
+    margin:35px;
+    margin-top:0;
+    background-color: #0066FF;
+    border:solid #FAC800;
+    width:400px;
+}
+
+table, thead, th, td, tr{
+    border:solid 1px  #FAC800;
+}
+th{padding:10px 0 10px 0;}
+#scoreboardDiv>div{
+    display:inline-block;
+    float:right;
+    width:450px;
+    border:solid 1px #FAC800;
+}
+.table {
+ /*   display:inline-block;*/
+    width:inherit;
+}
+#answerBorder > div{
+    white-space:nowrap;
+    width:500px;
+    background-color: #0066FF;
+    border:solid #FAC800;
+}
+
+#addQuestion > div{
+    width:inherit;
+    white-space:nowrap;
+    border:none;
+    margin:0;
+}
+
+#postQuizButton, #nextButton{
+    display:inline-block;
+    width: 100px;
+
+}
+
