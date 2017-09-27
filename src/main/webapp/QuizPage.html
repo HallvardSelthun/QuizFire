@@ -25,7 +25,7 @@
         var j;
         var nick;
         var serverNick;
-        var quizName
+        var quizName;
         $(document).ready(function () {
             serverNick = localStorage.getItem("serverNick");
             quizName = localStorage.getItem("joinQuiz");
@@ -52,7 +52,8 @@
 
                 var now = new Date(Date.now());
                 if(endTime<now){
-                    $("#quiz").html("Quiz Over");
+                   alert("Quiz Over!");
+                   window.location = "QuizRepo.html";
                 }
                 var time = (startTime.getTime()-now.getTime())/1000;
                 var differance = Math.floor((now.getTime()-startTime.getTime())/1000);
@@ -61,28 +62,32 @@
                 j = qNumber;
                 var t = timer-qOffset;
                 $("#questionText").html(quiz.questions[j].questionName);
-                $("#label1").html(quiz.questions[j].alternatives[0]);
-                $("#label2").html(quiz.questions[j].alternatives[1]);
-                $("#label3").html(quiz.questions[j].alternatives[2]);
-                $("#label4").html(quiz.questions[j].alternatives[3]);
+
+                var a = shuffle();
+                $("#label1").html(quiz.questions[j].alternatives[a[0]]);
+                $("#label2").html(quiz.questions[j].alternatives[a[1]]);
+                $("#label3").html(quiz.questions[j].alternatives[a[2]]);
+                $("#label4").html(quiz.questions[j].alternatives[a[3]]);
 
                 console.log("J: "+j);
                 var interval1 = setInterval(function a (){
                     t -= 1;
                     if(t===0){
-                        localStorage.setItem(serverNick+quizName, false)
+                        localStorage.setItem(serverNick+quizName, false);
                         $("#quiz").html (originalhtml).show();
-
-                        if(j>=quiz.questions.length){
+                        console.log("J: " +j);
+                        console.log("Q-length: "+quiz.questions.length);
+                        if((j+1)>=quiz.questions.length){
+                            $("#quiz").html ("Quiz Over!").show();
                             stopQuiz();
                             clearInterval(interval1);
                             return;
                         }
-
+/*
                         if( j === qNumber) {
                             j++;
                             qNumber=0;
-                        }
+                        }*/
                         j++;
                         $("#questionText").html(quiz.questions[j].questionName);
                         var a = shuffle();
@@ -177,11 +182,6 @@
                 };
                 $("#quiz").html("Question answered").show();
             });
-            function incrementTable(nick){
-                var position = nick.indexOf("_");
-                var nickQuiz = (nick.substr(0, position).replace('"',''));
-                console.log("nick thats getting incremented: "+nickQuiz);
-            }
         });
     </script>
 
